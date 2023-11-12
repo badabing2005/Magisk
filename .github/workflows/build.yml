@@ -18,6 +18,7 @@ on:
 jobs:
   build:
     name: Build on ${{ matrix.os }}
+    if: github.actor == 'badabing2005'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
