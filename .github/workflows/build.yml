@@ -18,6 +18,7 @@ on:
 jobs:
   build:
     name: Build Magisk artifacts
+    if: github.actor == 'badabing2005'
     runs-on: ubuntu-latest
     env:
       SCCACHE_DIRECT: false

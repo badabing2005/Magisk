@@ -274,34 +274,34 @@ void load_modules() {
 
     char buf[4096];
     LOGI("* Loading modules\n");
-    for (const auto &m : *module_list) {
-        const char *module = m.name.data();
-        char *b = buf + ssprintf(buf, sizeof(buf), "%s/" MODULEMNT "/%s/", get_magisk_tmp(), module);
+    // for (const auto &m : *module_list) {
+        // const char *module = m.name.data();
+        // char *b = buf + ssprintf(buf, sizeof(buf), "%s/" MODULEMNT "/%s/", get_magisk_tmp(), module);
 
-        // Read props
-        strcpy(b, "system.prop");
-        if (access(buf, F_OK) == 0) {
-            LOGI("%s: loading [system.prop]\n", module);
-            // Do NOT go through property service as it could cause boot lock
-            load_prop_file(buf, true);
-        }
+        // // Read props
+        // strcpy(b, "system.prop");
+        // if (access(buf, F_OK) == 0) {
+            // LOGI("%s: loading [system.prop]\n", module);
+            // // Do NOT go through property service as it could cause boot lock
+            // load_prop_file(buf, true);
+        // }
 
-        // Check whether skip mounting
-        strcpy(b, "skip_mount");
-        if (access(buf, F_OK) == 0)
-            continue;
+        // // Check whether skip mounting
+        // strcpy(b, "skip_mount");
+        // if (access(buf, F_OK) == 0)
+            // continue;
 
-        // Double check whether the system folder exists
-        strcpy(b, "system");
-        if (access(buf, F_OK) != 0)
-            continue;
+        // // Double check whether the system folder exists
+        // strcpy(b, "system");
+        // if (access(buf, F_OK) != 0)
+            // continue;
 
-        LOGI("%s: loading mount files\n", module);
-        b[-1] = '\0';
-        int fd = xopen(buf, O_RDONLY | O_CLOEXEC);
-        system->collect_module_files(module, fd);
-        close(fd);
-    }
+        // LOGI("%s: loading mount files\n", module);
+        // b[-1] = '\0';
+        // int fd = xopen(buf, O_RDONLY | O_CLOEXEC);
+        // system->collect_module_files(module, fd);
+        // close(fd);
+    // }
     if (get_magisk_tmp() != "/sbin"sv || !str_contains(getenv("PATH") ?: "", "/sbin")) {
         // Need to inject our binaries into /system/bin
         inject_magisk_bins(system);
