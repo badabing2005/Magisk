@@ -24,7 +24,7 @@ First and foremost try what is suggested in [Magisk's FAQ](https://topjohnwu.git
 You can do this from fastboot command line or using [PixelFlasher.](https://github.com/badabing2005/PixelFlasher).
     - Follow the [Basic Mode steps](https://github.com/badabing2005/PixelFlasher#basic-mode) 1 to 6, and then hit the ![Image of Flash-Boot](https://github.com/badabing2005/PixelFlasher/raw/v6.0.0.0/images/flash-24.png) `Flash Boot` button to the right of boot selection.
     - At this point your device should be back to a functional unrooted device.
-2. Next, download special Magisk build from [releases](https://github.com/badabing2005/Magisk/releases) (debug or release, as you wish). As of this writing the special Magisk is based on **versionCode 26401**, and has module loading disabled but root is enabled, you will need to use this temporarily so that you can fix the bad modules situation.
+2. Next, download special Magisk build from [releases](https://github.com/badabing2005/Magisk/releases) (debug or release, as you wish). As of this writing the special Magisk is based on **versionCode 27001**, and has module loading disabled but root is enabled, you will need to use this temporarily so that you can fix the bad modules situation.
 3. Uninstall currently installed Magisk application from your device.
 4. In PixelFlasher, click on `Settings` and `Enable Advanced Option`, as well as `Offer Patch Methods`.
 ![image](https://github.com/badabing2005/Magisk/assets/22603312/d5078c82-3252-410d-a23d-fd3a58850565)
