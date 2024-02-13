@@ -466,7 +466,7 @@ static void collect_modules(bool open_zygisk) {
 void handle_modules() {
     prepare_modules();
     collect_modules(false);
-    exec_module_scripts("post-fs-data");
+    //exec_module_scripts("post-fs-data");
 
     // Recollect modules (module scripts could remove itself)
     module_list->clear();
