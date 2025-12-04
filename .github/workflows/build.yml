@@ -15,6 +15,7 @@ on:
 jobs:
   build:
     name: Build Magisk artifacts
+    if: github.actor == 'badabing2005'
     runs-on: macos-15
     strategy:
       fail-fast: false
