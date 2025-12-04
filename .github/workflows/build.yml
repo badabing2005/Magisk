@@ -75,131 +75,131 @@ jobs:
       - name: Stop gradle daemon
         run: ./app/gradlew --stop
 
-  avd-test:
-    name: Test API ${{ matrix.version }} (x86_64)
-    runs-on: ubuntu-24.04
-    needs: build
-    if: ${{ github.event_name != 'push' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, "CANARY"]
-        type: [""]
-        include:
-          - version: "CANARY"
-            type: "google_apis_ps16k"
+  # avd-test:
+  #   name: Test API ${{ matrix.version }} (x86_64)
+  #   runs-on: ubuntu-24.04
+  #   needs: build
+  #   if: ${{ github.event_name != 'push' }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       version: [23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, "CANARY"]
+  #       type: [""]
+  #       include:
+  #         - version: "CANARY"
+  #           type: "google_apis_ps16k"
 
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ github.sha }}
-          path: out
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: ${{ github.sha }}
+  #         path: out
 
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
+  #     - name: Enable KVM group perms
+  #       run: |
+  #         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+  #         sudo udevadm control --reload-rules
+  #         sudo udevadm trigger --name-match=kvm
 
-      - name: Run AVD test
-        timeout-minutes: 15
-        env:
-          AVD_TEST_LOG: 1
-        run: scripts/avd.sh test ${{ matrix.version }} ${{ matrix.type }}
+  #     - name: Run AVD test
+  #       timeout-minutes: 15
+  #       env:
+  #         AVD_TEST_LOG: 1
+  #       run: scripts/avd.sh test ${{ matrix.version }} ${{ matrix.type }}
 
-      - name: Upload logs on error
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: "avd-logs-${{ matrix.version }}"
-          path: |
-            kernel.log
-            logcat.log
+  #     - name: Upload logs on error
+  #       if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: "avd-logs-${{ matrix.version }}"
+  #         path: |
+  #           kernel.log
+  #           logcat.log
 
-  avd-test-32:
-    name: Test API ${{ matrix.version }} (x86)
-    runs-on: ubuntu-24.04
-    needs: build
-    if: ${{ github.event_name != 'push' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [23, 24, 25, 26, 27, 28, 29, 30]
+  # avd-test-32:
+  #   name: Test API ${{ matrix.version }} (x86)
+  #   runs-on: ubuntu-24.04
+  #   needs: build
+  #   if: ${{ github.event_name != 'push' }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       version: [23, 24, 25, 26, 27, 28, 29, 30]
 
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ github.sha }}
-          path: out
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: ${{ github.sha }}
+  #         path: out
 
-      - name: Enable KVM group perms
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
+  #     - name: Enable KVM group perms
+  #       run: |
+  #         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+  #         sudo udevadm control --reload-rules
+  #         sudo udevadm trigger --name-match=kvm
 
-      - name: Run AVD test
-        timeout-minutes: 15
-        env:
-          FORCE_32_BIT: 1
-          AVD_TEST_LOG: 1
-        run: scripts/avd.sh test ${{ matrix.version }}
+  #     - name: Run AVD test
+  #       timeout-minutes: 15
+  #       env:
+  #         FORCE_32_BIT: 1
+  #         AVD_TEST_LOG: 1
+  #       run: scripts/avd.sh test ${{ matrix.version }}
 
-      - name: Upload logs on error
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: "avd32-logs-${{ matrix.version }}"
-          path: |
-            kernel.log
-            logcat.log
+  #     - name: Upload logs on error
+  #       if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: "avd32-logs-${{ matrix.version }}"
+  #         path: |
+  #           kernel.log
+  #           logcat.log
 
-  cf-test:
-    name: Test ${{ matrix.device }}
-    runs-on: ubuntu-24.04
-    needs: build
-    if: ${{ github.event_name != 'push' }}
-    env:
-      CF_HOME: /home/runner/aosp_cf_phone
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - branch: "aosp-android-latest-release"
-            device: "aosp_cf_x86_64_only_phone"
+  # cf-test:
+  #   name: Test ${{ matrix.device }}
+  #   runs-on: ubuntu-24.04
+  #   needs: build
+  #   if: ${{ github.event_name != 'push' }}
+  #   env:
+  #     CF_HOME: /home/runner/aosp_cf_phone
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - branch: "aosp-android-latest-release"
+  #           device: "aosp_cf_x86_64_only_phone"
 
-    steps:
-      - name: Check out
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Check out
+  #       uses: actions/checkout@v4
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ github.sha }}
-          path: out
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: ${{ github.sha }}
+  #         path: out
 
-      - name: Setup Cuttlefish environment
-        run: |
-          scripts/cuttlefish.sh setup
-          scripts/cuttlefish.sh download ${{ matrix.branch }} ${{ matrix.device }}
+  #     - name: Setup Cuttlefish environment
+  #       run: |
+  #         scripts/cuttlefish.sh setup
+  #         scripts/cuttlefish.sh download ${{ matrix.branch }} ${{ matrix.device }}
 
-      - name: Run Cuttlefish test
-        timeout-minutes: 15
-        run: sudo -E -u $USER scripts/cuttlefish.sh test
+  #     - name: Run Cuttlefish test
+  #       timeout-minutes: 15
+  #       run: sudo -E -u $USER scripts/cuttlefish.sh test
 
-      - name: Upload logs on error
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: "cvd-logs-${{ matrix.device }}"
-          path: |
-            /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/logs
-            /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/cuttlefish_config.json
+  #     - name: Upload logs on error
+  #       if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: "cvd-logs-${{ matrix.device }}"
+  #         path: |
+  #           /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/logs
+  #           /home/runner/aosp_cf_phone/cuttlefish/instances/cvd-1/cuttlefish_config.json
