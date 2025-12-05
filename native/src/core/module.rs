@@ -830,7 +830,7 @@ impl MagiskD {
 
         // Recollect modules (module scripts could remove itself)
         let modules = collect_modules(zygisk, true);
-        // self.apply_modules(&modules);
+        self.apply_modules(&modules);
 
         self.module_list.set(modules).ok();
     }
@@ -850,30 +850,30 @@ impl MagiskD {
         // In this step, there is zero logic applied during tree construction; we simply collect and
         // record the union of all module filesystem trees under each of their /system directory.
 
-        for info in module_list {
-            let mut paths = paths.set_module(&info.name);
+        // for info in module_list {
+        //     let mut paths = paths.set_module(&info.name);
 
-            // Read props
-            let prop = paths.append("system.prop");
-            if prop.module().exists() {
-                load_prop_file(prop.module());
-            }
-            drop(prop);
+        //     // Read props
+        //     let prop = paths.append("system.prop");
+        //     if prop.module().exists() {
+        //         load_prop_file(prop.module());
+        //     }
+        //     drop(prop);
 
-            // Check whether skip mounting
-            let skip = paths.append("skip_mount");
-            if skip.module().exists() {
-                continue;
-            }
-            drop(skip);
+        //     // Check whether skip mounting
+        //     let skip = paths.append("skip_mount");
+        //     if skip.module().exists() {
+        //         continue;
+        //     }
+        //     drop(skip);
 
-            // Double check whether the system folder exists
-            let sys = paths.append("system");
-            if sys.module().exists() {
-                info!("{}: loading module files", &info.name);
-                system.collect(sys).log_ok();
-            }
-        }
+        //     // Double check whether the system folder exists
+        //     let sys = paths.append("system");
+        //     if sys.module().exists() {
+        //         info!("{}: loading module files", &info.name);
+        //         system.collect(sys).log_ok();
+        //     }
+        // }
 
         // Step 2: Inject custom files
         //
